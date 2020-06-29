@@ -1,10 +1,22 @@
-{% extends 'base.html' %}
-{% block content %}
-    {% for task in tasks %}
-        {{task.task_name}}
-        {{task.category_name}}
-        {{task.task_description}}
-        {{task.is_urgent}}
-        {{task.ingredients_needed}}
-    {% endfor %}
-{% endblock %}
+<!DOCTYPE html>
+<html>
+
+<head>
+    <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/materialize/0.100.2/css/materialize.min.css">
+</head>
+
+<body>
+    {% block content %} 
+    {% endblock %}
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/materialize/0.100.2/js/materialize.min.js"></script>
+    <script type="text/javascript">
+        $(document).ready(function() {
+            $('.collapsible').collapsible();
+        })
+    </script>
+</body>
+
+</html>
