@@ -13,32 +13,56 @@ app.config["MONGO_URI"] = os.environ.get("MONGO_URI")
 mongo = PyMongo(app)
 
 
+
 @app.route('/')
-@app.route('/get_tasks')
-def get_tasks():
-    return render_template("tasks.html", tasks=mongo.db.tasks.find())
+@app.route('/get_recipes')
+def get_recipes():
+    return render_template("recipe.html", 
+                           tasks=mongo.db.tasks.find())
+
 
 @app.route('/add_recipe')
 def add_recipe():
     return render_template('addrecipe.html',
-    categories=mongo.db.categories.find())
+                           categories=mongo.db.categories.find())
+
 
 @app.route('/insert_recipe', methods=['POST'])
 def insert_recipe():
-    task = mongo.db.tasks
-    task.insert
-    tasks.insert_one(request.form.to_dict)
-    return redirect(url_for('gets_tasks'))
+    tasks = mongo.db.tasks
+    tasks.insert_one(request.form.to_dict())
+    return redirect(url_for('get_recipes'))
 
-@app.route('/edit_recipe/<task_id>')
-def edit_recipe(task_id):
+
+@app.route('/edit_task/<task_id>')
+def edit_task(task_id):
     the_task =  mongo.db.tasks.find_one({"_id": ObjectId(task_id)})
     all_categories =  mongo.db.categories.find()
     return render_template('editrecipe.html', task=the_task,
-                           categories=all_categories    
+                           categories=all_categories)
+
+
+@app.route('/update_task/<task_id>', methods=["POST"])
+def update_task(task_id):
+    tasks = mongo.db.tasks
+    tasks.update( {'_id': ObjectId(task_id)},
+    {
+        'task_name':request.form.get('task_name'),
+        'category_name':request.form.get('category_name'),
+        'task_description': request.form.get('task_description'),
+        'due_date': request.form.get('due_date'),
+        'is_urgent':request.form.get('is_urgent')
+    })
+    return redirect(url_for('get_recipes'))
+
+
+@app.route('/delete_task/<task_id>')
+def delete_task(task_id):
+    mongo.db.tasks.remove({'_id': ObjectId(task_id)})
+    return redirect(url_for('get_recipes'))
 
 
 if __name__ == '__main__':
     app.run(host=os.environ.get('IP'),
-        port=int(os.environ.get('PORT')),
-        debug=True)
+            port=int(os.environ.get('PORT')),
+            debug=True)
